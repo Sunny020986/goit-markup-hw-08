@@ -1,0 +1,193 @@
+
+.backdrop {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    
+    position: fixed;
+
+    background: rgba(0, 0, 0, 0.2);
+    transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .backdrop.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  
+  .modal {
+    padding: 40px;
+    width: 528px;
+    min-height: 581px;
+    top: 50%;
+    left: 50%;
+
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+      
+    transform: translate(-50%, -50%);
+  
+    background: $primary-title-color;
+  
+    border-radius: 4px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 1px rgba(0, 0, 0, 0.14),
+      0px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal__btn {
+    top: 8px;
+    right: 8px;
+  
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+
+    position: absolute;
+  
+    background: $primary-title-color;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+  }
+  
+    .modal__icon--close {
+    width: 11px;
+    height: 11px;
+    
+    fill: #000000;
+    transition: fill 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  .modal__btn:hover &, .modal__btn:focus & {
+    fill: $accent-color;
+    }
+  }
+
+  .modal__tittle {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: calc(23 / 20);
+
+    margin-bottom: 12px;
+
+    color: $secondary-title-color;
+  }
+  
+  .modal__form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal__label {
+    letter-spacing: 0.01em;
+    font-size: 12px;
+    line-height: calc(14 / 12);
+
+    position: relative;
+    margin-bottom: 12px;
+
+    color: $primary-text-color;
+  }
+
+  .modal__input--data {
+    width: 100%;
+    min-height: 40px;
+    padding-left: 40px;
+    outline: none;
+    border: 1px solid rgba(33, 33, 33, 0.2);
+    border-radius: 4px;
+    margin-top: 4px;
+    transition: border-color 1150 cubic-bezier(0.4, 0, 0.2, 1);
+    .modal__label:hover &,
+    .modal__label:focus-within &{
+      border-color: $accent-color;
+    }
+  }
+  
+  .modal__icon--data {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    top: 36px;
+    right: 405px;
+    transition: fill 250 cubic-bezier(0.4, 0, 0.2, 1);
+    .modal__label:hover &, 
+    .modal__label:focus &,
+    .modal__label:focus-within &{
+      fill: $accent-color;
+    }
+  }
+  
+  .modal__textarea {
+    padding: 10px;
+    margin-top: 4px;
+    width: 100%;
+    height: 120px;
+    resize: none;
+    border: 1px solid rgba(33, 33, 33, 0.2);
+    border-radius: 4px;
+    outline: none;
+    &:focus-within,
+    &:hover,
+    &:focus {
+      border-color: $accent-color;
+    }
+  }
+  
+  
+  .modal__label--checkbox {
+    font-size: 14px;
+    line-height: calc(24 / 14);
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .modal__input--checkbox:checked + .modal__checkbox {
+    background-color: $accent-color;
+    background-image: url(../images/icon-check.svg);
+    border-color: $accent-color;
+    background-size: contain;
+    background-origin: content-box;
+  }
+  
+  .modal__checkbox {
+    width: 16px;
+    height: 15px;
+    margin-right: 8px;
+    border: 2px solid $secondary-title-color;
+    border-radius: 4px;
+    background-color: $primary-title-color;
+    transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .modal__Link {
+    color: $accent-color;
+    margin-left: 4px;
+  }
+  
+  .modal__button {
+    width: 200px;
+    height: 50px;
+    margin: 0px auto;
+    cursor: pointer;
+  
+    color: $secondary-background-color;
+    background-color: $accent-color;
+    border-radius: 4px;
+    border: none;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover, &:focus {
+    background-color: $button-background-color;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+    }
+  }

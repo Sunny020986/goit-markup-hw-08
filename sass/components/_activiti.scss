@@ -1,0 +1,61 @@
+
+.activiti {
+    padding-bottom: 94px;
+    background-color: $primary-title-color;
+  }
+  
+  .activiti__container{
+    @extend %container;
+  }
+
+  .activiti__topic {
+    font-size: 36px;
+    line-height: calc(42 / 36);
+    font-weight: bold;
+
+    text-align: center;
+    margin-bottom: 50px;
+
+    color: $secondary-title-color;
+  }
+  
+  .activiti__list {
+    @extend %list;
+    display: flex;
+  }
+  
+  .activiti__list :not(:last-child) {
+    margin-right: 30px;
+  }
+  
+  .activiti__block {
+    position: relative;
+  }
+  
+  .img{
+    @extend %img;
+  }
+  
+  .activiti__fond {
+    width: 100%;
+    height: 70px;
+  
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    
+    background: rgba(47, 48, 58, 0.8);
+  }
+  
+  .activiti__caption {
+    font-size: 14px;
+    line-height: calc(16 / 14);
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+  
+    color: $primary-title-color;
+  }
+  
