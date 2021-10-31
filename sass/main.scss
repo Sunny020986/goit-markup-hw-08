@@ -1,7 +1,8 @@
 @import "./utils/variables";
 @import "./utils/mixins";
-@import "./base/normalize";
 @import "./utils/placeholder";
+@import "./utils/template.scss";
+@import "./base/normalize";
 @import "./components/header";
 @import "./components/hero";
 @import "./components/benefits";
@@ -10,4 +11,4 @@
 @import "./components/clients";
 @import "./components/portfolio";
 @import "./components/footer";
-@import "./components/modal"
+@import "./components/modal";
