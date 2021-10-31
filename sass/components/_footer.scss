@@ -7,7 +7,6 @@
   }
   
   .footer__container {
-    @extend  %container;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;

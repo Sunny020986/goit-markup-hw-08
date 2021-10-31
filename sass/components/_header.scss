@@ -4,7 +4,6 @@
   }
   
   .header__container {
-    @extend %container;
     display: flex;
   }
   .nav {

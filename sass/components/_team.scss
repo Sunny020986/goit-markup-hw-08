@@ -1,11 +1,7 @@
 .team {
-  @extend %section;
     background-color: $secondary-background-color;
   }
   
-  .team__container{
-    @extend %container;
-  }
 
   .team__topic {
     font-weight: bold;
