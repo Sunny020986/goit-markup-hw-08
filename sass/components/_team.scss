@@ -20,6 +20,8 @@
   
   .team__list {
     @extend %list;
+    display: flex;
+    flex-wrap: wrap;
   }
     
   .team__item {

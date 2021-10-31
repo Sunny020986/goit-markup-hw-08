@@ -8,12 +8,13 @@
 
 .benefits__list {
   @extend %list;
-    display: flex;  
-    & :not(:last-child) {
-      margin-right: 30px;
-    }
+    display: flex;
   }
-
+  
+  .benefits__list :not(:last-child) {
+    margin-right: 30px;
+  }
+  
   .benefits__item {
     width: 270px;
   }
@@ -26,7 +27,7 @@
     margin-bottom: 30px;
     width: 270px;
     height: 120px;
-    background-color: $secondary-background-color;
+    background-color: #f5f4fa;
     border-radius: 4px;
   }
   
