@@ -86,7 +86,7 @@ code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
   /* 1 */
   font-size: 1em;
   /* 2 */
@@ -526,6 +526,12 @@ ul {
 .activiti {
   padding-bottom: 94px;
   background-color: #ffffff;
+}
+
+@media screen and (max-width: 767px) {
+  .activiti {
+    display: none;
+  }
 }
 
 .activiti__topic {
