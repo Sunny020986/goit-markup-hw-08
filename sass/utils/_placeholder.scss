@@ -1,23 +1,4 @@
-/* стандартные параметры стиля */
-body {
-    font-family: 'Roboto', sans-serif;
-    letter-spacing: 0.03em;
-    color: var(--primary-text-color);
-    background-color: var(--primary-title-color);
-  }
-  
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  ul {
-    padding: 0;
-    margin: 0;
-  }
-  
+
   /* убираем подчеркивание */
   %link {
     text-decoration: none;
@@ -27,15 +8,7 @@ body {
   %list {
     list-style: none;
   }
-  
-  .visually-hidden {
-    position: absolute;
-    clip: rect(0 0 0 0);
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-  }
-  
+
   %img {
     display: block;
     max-width: 100%;

@@ -1,4 +1,32 @@
 @charset "UTF-8";
+/* стандартные параметры стиля */
+body {
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 0.03em;
+  color: var(--primary-text-color);
+  background-color: var(--primary-title-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+}
+
 /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 /*
 Document
@@ -259,26 +287,6 @@ summary {
   display: list-item;
 }
 
-/* стандартные параметры стиля */
-body {
-  font-family: 'Roboto', sans-serif;
-  letter-spacing: 0.03em;
-  color: var(--primary-text-color);
-  background-color: var(--primary-title-color);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-ul {
-  padding: 0;
-  margin: 0;
-}
-
 /* убираем подчеркивание */
 .header__logo-link, .nav-menu__link, .nav-menu__link--current, .nav-contact__link, .portfolio__link, .footer__logo, .footer__address, .footer__contact {
   text-decoration: none;
@@ -287,14 +295,6 @@ ul {
 /* убираем точки из списка <ul> */
 .nav-menu__list, .benefits__list, .activiti__list, .team__list, .clients__list, .portfolio-btn__list, .portfolio__list, .footer__list--contact {
   list-style: none;
-}
-
-.visually-hidden {
-  position: absolute;
-  clip: rect(0 0 0 0);
-  width: 1px;
-  height: 1px;
-  margin: -1px;
 }
 
 .img {
@@ -528,12 +528,6 @@ ul {
   background-color: #ffffff;
 }
 
-@media screen and (max-width: 1199px) {
-  .activiti {
-    display: none;
-  }
-}
-
 .activiti__topic {
   font-size: 36px;
   line-height: calc(42 / 36);
@@ -586,11 +580,6 @@ ul {
   text-align: center;
   margin-bottom: 50px;
   color: #212121;
-}
-
-.team__list {
-  display: flex;
-  flex-wrap: wrap;
 }
 
 .team__item {
