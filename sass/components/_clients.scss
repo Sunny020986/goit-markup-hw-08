@@ -1,23 +1,18 @@
 
 
 .clients__topic {
-  font-weight: bold;
-  font-size: 36px;
-  line-height: calc(42 / 36);
-
+  @include font (inherit, 36px, bold, 1.16, 0.03em, $secondary-title-color);
   text-align: center;
   margin-bottom: 50px;
-
-  color: $secondary-title-color;
   }
   
   .clients__list {
     @extend %list;
     display: flex;
-  }
   
-  .clients__list :not(:first-child) {
-    margin-left: 30px;
+    & :not(:first-child) {
+      margin-left: 30px;
+    }
   }
   
   .clients__link {

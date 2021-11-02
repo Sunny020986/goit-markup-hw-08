@@ -2,10 +2,10 @@
 .benefits__list {
   @extend %list;
     display: flex;
-  }
   
-  .benefits__list :not(:last-child) {
-    margin-right: 30px;
+    & :not(:last-child) {
+      margin-right: 30px;
+    }
   }
   
   .benefits__item {
@@ -25,19 +25,13 @@
   }
   
   .benefits__tittle {
-    margin-bottom: 10px;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: calc(16 / 14);
+    @include font (inherit, 14px, bold, 1.14, 0.03em, $secondary-title-color);
     text-transform: uppercase;
-    color: $secondary-title-color;
+
+    margin-bottom: 10px;
   }
   
   .benefits__text {
-    font-weight: normal;
-    font-size: 14px;
-    line-height: calc(24 / 14);
-    letter-spacing: 0.03em;
-    color: $primary-text-color;
+    @include font (inherit, 14px, normal, 1.71, 0.03em, $primary-text-color);
   }
   

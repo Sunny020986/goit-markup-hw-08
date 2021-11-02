@@ -19,23 +19,13 @@
     }
   }
   
-
-  
-  // .footer__container :not(:last-child) {
-  //   margin-right: 60px;
-  // } 
-  
   .footer__logo {
     @extend %link;
-    font-weight: 700;
-    font-size: 26px;
-    line-height: calc(31 / 26);
-    font-family: Raleway;
-
+    @include font (Raleway, 26px, 700, 1.19, 0.03em, $primary-title-color);
+ 
     display: block;
     margin-bottom: 20px;
 
-    color: $primary-title-color;
   }
   
   .footer__logo-span {
@@ -52,12 +42,8 @@
   
   .footer__address {
     @extend %link;
-    font-size: 14px;
-    line-height: calc(24 / 14);
+    @include font (Roboto, 14px, normal, 1.71, 0.03em, $primary-title-color);
     font-style: normal;
-
-    color: $primary-title-color;
-
     transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   
     &:hover, &:focus {
@@ -67,11 +53,8 @@
   
   .footer__contact {
     @extend %link;
-    font-size: 14px;
-    line-height: calc(24 / 14);
+    @include font (Roboto, 14px, normal, 1.71, 0.03em, rgba(255, 255, 255, 0.6));
     font-style: normal;
-
-    color: rgba(255, 255, 255, 0.6);
 
     transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
   
@@ -80,15 +63,12 @@
   }
 }
   
-    .footer__topic {
-    font-size: 14px;
-    line-height: calc(16 / 14);
-    font-style: normal;
-    font-weight: bold;
+    .footer__topic {      
+    @include font (Roboto, 14px, bold, 1.14, 0.03em, $secondary-background-color);
+
     text-transform: uppercase;
-  
-    color: $secondary-background-color;
-  
+      font-style: normal;
+      
     margin-bottom: 20px;
     display: inline-block;
   }
@@ -96,10 +76,9 @@
   .footer__list--social {
     display: flex;
     justify-content: center;
-  }
-  
-  .footer__list--social :not(:first-child) {
-    margin-left: 10px;
+      & :not(:first-child) {
+      margin-left: 10px;
+    }
   }
   
   .footer__social {
@@ -137,17 +116,13 @@
     margin-left: auto;
   }
   
-  .footer__tittle {
-    font-size: 14px;
-    line-height: calc(16 / 14);
+  .footer__tittle {    
+    @include font (Roboto, 14px, bold, 1.14, 0.03em, $secondary-background-color);
     font-style: normal;
-    font-weight: bold;
     text-transform: uppercase;
   
     display: block;
     margin-bottom: 20px;
-
-    color: $secondary-background-color;
   }
   
   .footer__form {
@@ -166,11 +141,9 @@
     background-color: transparent;
   }
 
-  .footer__submit {
-    font-size: 16px;
-    line-height: calc(30 / 16);
-    font-weight: bold;
-    letter-spacing: 0.06em;
+  .footer__submit {    
+    @include font (Roboto, 16px, bold, 1.87, 0.06em, $primary-title-color);
+
     border-radius: 4px;
     border-style: none;
     cursor: pointer;
@@ -179,17 +152,15 @@
     margin-left: 12px;
     display: flex;
   
-    color: $primary-title-color;
     background-color: $accent-color;
     transition: background-color 250 cubic-bezier(0.4, 0, 0.2, 1);
   
-  &:hover,&:focus {
+  &:hover, &:focus {
     background-color: $button-background-color;
     }
   }
 
   .footer__svg {
     margin-left: 12px;
-
     fill: $primary-title-color;
   }

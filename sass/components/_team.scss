@@ -4,14 +4,9 @@
   
 
   .team__topic {
-    font-weight: bold;
-    font-size: 36px;
-    line-height: calc(42 / 36);
+    @include font (inherit, 36px, bold, 1.16, 0.03em, $secondary-title-color);
     text-align: center;
-
     margin-bottom: 50px;
-
-    color: $secondary-title-color;
   }
   
   .team__list {
@@ -35,7 +30,6 @@
   
   .team-block {
     height: calc(428px - 260px);
-
     padding: 20px;
     width: 100%;
     display: flex;
@@ -45,32 +39,23 @@
   }
   
   .person__name {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: calc(19 / 16);
-
+    @include font (inherit, 16px, 500, 1.18, 0.03em, $secondary-title-color);
     margin-bottom: 10px;
 
-    color: $secondary-title-color;
   }
   
   .person__team {
-    font-size: 36px;
-    font-size: 16px;
-    line-height: calc(19 / 16);
-
+    @include font (inherit, 16px, normal, 1.18, 0.03em, $primary-text-color);
     margin-bottom: 16px;
 
-    color: $primary-text-color;
   }
   
   .person__list {
     display: flex;
     justify-content: center;
-  }
-  
-  .person__list :not(:last-child) {
-    margin-right: 10px;
+    & :not(:last-child) {
+      margin-right: 10px;
+    }
   }
   
   .person__item {
@@ -89,8 +74,8 @@
     justify-content: center;
     
     transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  &:hover,&:focus {
-    background-color: $accent-color;
+      &:hover,&:focus {
+      background-color: $accent-color;
     }
   }
 

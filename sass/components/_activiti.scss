@@ -8,23 +8,19 @@
   }
   
   .activiti__topic {
-    font-size: 36px;
-    line-height: calc(42 / 36);
-    font-weight: bold;
+    @include font (inherit, 36px, bold, 1.16, 0.03em, $secondary-title-color);
 
     text-align: center;
     margin-bottom: 50px;
-
-    color: $secondary-title-color;
   }
   
   .activiti__list {
     @extend %list;
     display: flex;
-  }
   
-  .activiti__list :not(:last-child) {
-    margin-right: 30px;
+    & :not(:last-child) {
+      margin-right: 30px;
+    }
   }
   
   .activiti__block {
@@ -49,12 +45,10 @@
   }
   
   .activiti__caption {
-    font-size: 14px;
-    line-height: calc(16 / 14);
-    font-weight: bold;
+    @include font (inherit, 14px, bold, 1.16, 0.03em, $primary-title-color);
+
     text-align: center;
     text-transform: uppercase;
   
-    color: $primary-title-color;
   }
   
