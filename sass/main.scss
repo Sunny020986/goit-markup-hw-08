@@ -1,15 +1,5 @@
-
-@import "./utils/variables";
+// main scss
 @import "./base/normalize";
-@import "./utils/mixins";
-@import "./utils/placeholder";
-@import "./utils/templates.scss";
-@import "./components/header";
-@import "./components/hero";
-@import "./components/benefits";
-@import "./components/activiti";
-@import "./components/team";
-@import "./components/clients";
-@import "./components/portfolio";
-@import "./components/footer";
-@import "./components/modal";
+@import "./utils/utils";
+@import "./components/components";
+@import "./layout/layout";

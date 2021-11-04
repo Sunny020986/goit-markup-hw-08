@@ -6,3 +6,35 @@
     letter-spacing: $ls;
     color: $fc;
 }
+
+@mixin flex($df, $ai, $jc, $fd, $fw){
+    display: $df;
+    align-items: $ai;
+    justify-content: $jc;
+    flex-direction: $fd;
+    flex-wrap: $fw;
+}
+
+@mixin transition($one, $two, $three, $time, $func){
+    transition-property: $one, $two, $three;
+    transition-duration: $time;
+    transition-timing-function: $funk;
+}
+
+@mixin section($pt, $pb) {
+padding-top: $pt;
+padding-bottom: $pb;    
+}
+
+@mixin list($df, $fw, $ml, $mt) {
+    display: $df;
+    flex-wrap: $fw;
+    margin-left: -1 * $ml;
+    margin-top: -1 * $mt;
+}
+
+@mixin item ($ml, $mt, $fq, $gap){
+    margin-left: $ml;
+    margin-top: $mt;
+    flex-basis: calc(100% / #{$q} - #{$gap});
+}

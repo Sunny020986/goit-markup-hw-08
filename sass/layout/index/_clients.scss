@@ -9,6 +9,7 @@
   .clients__list {
     @extend %list;
     display: flex;
+    width: 450px;
   
     & :not(:first-child) {
       margin-left: 30px;
