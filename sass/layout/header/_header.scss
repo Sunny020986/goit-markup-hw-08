@@ -13,7 +13,7 @@
   
   .header__logo-link {
     @extend %link;
-    @include font(Raleway, 26px, 700, 1.19, none, $header-logo-color);
+    @include font (Raleway, 26px, 700, 1.19, none, $header-logo-color);
 
     padding-top: 25px;
     padding-bottom: 25px;

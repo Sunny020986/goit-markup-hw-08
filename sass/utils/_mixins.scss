@@ -33,7 +33,7 @@ padding-bottom: $pb;
     margin-top: -1 * $mt;
 }
 
-@mixin item ($ml, $mt, $fq, $gap){
+@mixin item($ml, $mt, $fq, $gap){
     margin-left: $ml;
     margin-top: $mt;
     flex-basis: calc(100% / #{$q} - #{$gap});
