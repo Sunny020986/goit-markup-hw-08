@@ -1,9 +1,8 @@
 
 .portfolio-btn__list {
   @extend %list;
+  @include flex(flex, none, center, none, none);
     margin-bottom: 50px;
-    display: flex;
-    justify-content: center;
   
     & :not(:first-child) {
       margin-left: 8px;
@@ -12,11 +11,6 @@
   
   .portfolio__btn--current {
     @include font (inherit, 16px, 500, 1.62, 0.03em, $secondary-background-color);
-    // font-weight: 500;
-    // font-size: 16px;
-    // line-height: calc(26 / 16);
-    // font-family: inherit;
-    // color: $secondary-background-color;
     border-radius: 4px;
     border: none;
     cursor: pointer;
@@ -51,25 +45,22 @@
     
     .portfolio__list {
       @extend %list;
-      @include list(flex, wrap, 30, 30);
-      // display: flex;
-      // flex-wrap: wrap;
+      @include flex(flex, none, none, none, wrap);
     }
     
     .portfolio__item {
-      @include item(30, 30, 3, 30);
-  //     display: flex;      
-  //   }
-  //   &:not(:nth-child(3n)) {
-  //   margin-right: 30px;
-  // }
-  //   &:not(:nth-last-child(-n + 3)) {
-  //   margin-bottom: 30px;
-  // }
+      display: flex;
+      
     .portfolio__block--data:hover &,
     .portfolio__block--data:focus & {
       box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.06),
         1px 4px 6px rgba(0, 0, 0, 0.16);
+    }
+      &:not(:nth-child(3n)) {
+      margin-right: 30px;
+    }
+      &:not(:nth-last-child(-n + 3)) {
+      margin-bottom: 30px;
     }
   }
   /* margin-right: 30px; */

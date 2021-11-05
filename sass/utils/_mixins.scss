@@ -6,7 +6,7 @@
     letter-spacing: $ls;
     color: $fc;
 }
-
+// @include flex($df, $ai, $jc, $fd, $fw);
 @mixin flex($df, $ai, $jc, $fd, $fw){
     display: $df;
     align-items: $ai;

@@ -615,10 +615,13 @@ ul {
   line-height: 1.14;
   letter-spacing: 0.02em;
   color: #757575;
-  padding-top: 32px;
-  padding-bottom: 32px;
   display: flex;
   align-items: center;
+  justify-content: none;
+  flex-direction: none;
+  flex-wrap: none;
+  padding-top: 32px;
+  padding-bottom: 32px;
   transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -946,9 +949,12 @@ ul {
 }
 
 .portfolio-btn__list {
-  margin-bottom: 50px;
   display: flex;
+  align-items: none;
   justify-content: center;
+  flex-direction: none;
+  flex-wrap: none;
+  margin-bottom: 50px;
 }
 
 .portfolio-btn__list :not(:first-child) {
@@ -996,20 +1002,27 @@ ul {
 
 .portfolio__list {
   display: flex;
+  align-items: none;
+  justify-content: none;
+  flex-direction: none;
   flex-wrap: wrap;
-  margin-left: -30;
-  margin-top: -30;
 }
 
 .portfolio__item {
-  margin-left: 30;
-  margin-top: 30;
-  flex-basis: calc(100% / 3 - 30);
+  display: flex;
 }
 
 .portfolio__block--data:hover .portfolio__item,
 .portfolio__block--data:focus .portfolio__item {
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.06), 1px 4px 6px rgba(0, 0, 0, 0.16);
+}
+
+.portfolio__item:not(:nth-child(3n)) {
+  margin-right: 30px;
+}
+
+.portfolio__item:not(:nth-last-child(-n + 3)) {
+  margin-bottom: 30px;
 }
 
 /* margin-right: 30px; */
@@ -1086,9 +1099,10 @@ ul {
 
 .footer__container {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
   align-items: baseline;
+  justify-content: flex-start;
+  flex-direction: row;
+  flex-wrap: none;
 }
 
 .footer__block + .footer__block {
@@ -1159,7 +1173,10 @@ ul {
 
 .footer__list--social {
   display: flex;
+  align-items: none;
   justify-content: center;
+  flex-direction: none;
+  flex-wrap: none;
 }
 
 .footer__list--social :not(:first-child) {
@@ -1173,12 +1190,14 @@ ul {
 }
 
 .footer__link {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: none;
+  flex-wrap: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   fill: #f5f4fa;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
