@@ -317,13 +317,13 @@ ul {
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 768px) {
   .container {
     width: 768px;
   }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (min-width: 1200px) {
   .container {
     width: 1200px;
   }
@@ -753,6 +753,8 @@ ul {
 
 .activiti__block {
   position: relative;
+  width: 370px;
+  height: 294px;
 }
 
 .activiti__fond {

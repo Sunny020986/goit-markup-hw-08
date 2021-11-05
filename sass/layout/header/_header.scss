@@ -36,7 +36,7 @@
   .nav-menu__link {
     @extend %link;
     @include font (inherit, 14px, 500, 1.14,  0.02em, $secondary-title-color);
-
+    
     padding-top: 32px;
     padding-bottom: 32px;
     display: block;
@@ -87,7 +87,7 @@
   .nav-contact__link {
     @extend %link;
     @include font (inherit, 14px, 500, 1.14,  0.02em, $primary-text-color);
-
+  
     padding-top: 32px;
     padding-bottom: 32px;
     display: flex;
