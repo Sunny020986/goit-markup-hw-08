@@ -17,10 +17,7 @@
   }
   
   .hero__container {
-    // @mixin flex(flex, center, none, column, none);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @include flex(flex, center, none, column, none);
   }
   
   .hero__title {

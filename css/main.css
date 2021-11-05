@@ -330,8 +330,15 @@ ul {
 }
 
 .section {
-  padding-top: 94px;
-  padding-bottom: 94px;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+@media screen and (min-width: 1200px) {
+  .section {
+    padding-top: 94px;
+    padding-bottom: 94px;
+  }
 }
 
 .backdrop {
@@ -595,8 +602,10 @@ ul {
 
 .nav-contact__item {
   display: flex;
-  flex-direction: row;
   align-items: baseline;
+  justify-content: none;
+  flex-direction: row;
+  flex-wrap: none;
 }
 
 .nav-contact__link {
@@ -637,8 +646,10 @@ ul {
 
 .hero__container {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: none;
+  flex-direction: column;
+  flex-wrap: none;
 }
 
 .hero__title {
@@ -691,9 +702,10 @@ ul {
 
 .benefits__block {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  flex-wrap: none;
   margin-bottom: 30px;
   width: 270px;
   height: 120px;
@@ -758,12 +770,14 @@ ul {
 }
 
 .activiti__fond {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: none;
+  flex-wrap: none;
   width: 100%;
   height: 70px;
   bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: absolute;
   background: rgba(47, 48, 58, 0.8);
 }
@@ -812,13 +826,14 @@ ul {
 }
 
 .team-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex-wrap: none;
   height: calc(428px - 260px);
   padding: 20px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .person__name {
@@ -843,7 +858,10 @@ ul {
 
 .person__list {
   display: flex;
+  align-items: none;
   justify-content: center;
+  flex-direction: none;
+  flex-wrap: none;
 }
 
 .person__list :not(:last-child) {
@@ -857,12 +875,14 @@ ul {
 }
 
 .person__link {
-  border-radius: 50%;
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: none;
+  flex-wrap: none;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -903,13 +923,15 @@ ul {
 }
 
 .clients__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: none;
+  flex-wrap: none;
   width: 170px;
   height: 92px;
   border-radius: 4px;
   border: 1px solid #afb1b8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: #afb1b8;
   transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1), color 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }

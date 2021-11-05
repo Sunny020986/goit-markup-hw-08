@@ -35,13 +35,10 @@
   }
   
   .activiti__fond {
+    @include flex(flex, center, center, none, none);
     width: 100%;
     height: 70px;
-  
     bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: absolute;
     
     background: rgba(47, 48, 58, 0.8);

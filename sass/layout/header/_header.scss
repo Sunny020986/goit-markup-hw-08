@@ -79,9 +79,7 @@
   }
 
   .nav-contact__item {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
+    @include flex(flex, baseline, none, row, none);
   }
   
   .nav-contact__link {
