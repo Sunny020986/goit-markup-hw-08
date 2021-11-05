@@ -11,15 +11,16 @@
         rgba(47, 48, 58, 0.4)
       ),
       url(../images/hero.jpg);
-    background-size: 100%;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
   }
   
   .hero__container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @mixin flex (flex, center, none, column, none);
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
   }
   
   .hero__title {
