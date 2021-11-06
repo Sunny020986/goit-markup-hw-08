@@ -70,18 +70,24 @@
 }
   
   .nav-contact {
+    @media screen and (min-width: 1200px){
     display: flex;
-    margin-left: auto;
-  
+    flex-direction: row;
+    margin-left: auto;        
     & :not(:last-child) {
       margin-right: 50px;
+      }
+    }
+    @media screen and (max-width: 1199px){
+      display: flex;
+      flex-direction: column;
     }
   }
 
   .nav-contact__item {
     @include flex(flex, baseline, none, row, none);
   }
-  
+
   .nav-contact__link {
     @extend %link;
     @include font (inherit, 14px, 500, 1.14,  0.02em, $primary-text-color);

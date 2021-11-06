@@ -330,15 +330,8 @@ ul {
 }
 
 .section {
-  padding-top: 60px;
-  padding-bottom: 60px;
-}
-
-@media screen and (min-width: 1200px) {
-  .section {
-    padding-top: 94px;
-    padding-bottom: 94px;
-  }
+  padding-top: 94px;
+  padding-bottom: 94px;
 }
 
 .backdrop {
@@ -591,13 +584,22 @@ ul {
   border-radius: 4px;
 }
 
-.nav-contact {
-  display: flex;
-  margin-left: auto;
+@media screen and (min-width: 1200px) {
+  .nav-contact {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+  }
+  .nav-contact :not(:last-child) {
+    margin-right: 50px;
+  }
 }
 
-.nav-contact :not(:last-child) {
-  margin-right: 50px;
+@media screen and (max-width: 1199px) {
+  .nav-contact {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .nav-contact__item {
