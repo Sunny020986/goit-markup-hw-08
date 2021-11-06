@@ -92,6 +92,11 @@
     @extend %link;
     @include font (inherit, 14px, 500, 1.14,  0.02em, $primary-text-color);
     @include flex(flex, center, none, none, none);
+    @media screen and (max-width: 1200px){
+      
+    }
+      
+    
     padding-top: 32px;
     padding-bottom: 32px;
   
