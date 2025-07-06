@@ -1,0 +1,39 @@
+
+
+.clients__topic {
+  @include font (inherit, 36px, bold, 1.16, 0.03em, $secondary-title-color);
+  text-align: center;
+  margin-bottom: 50px;
+  }
+  
+  .clients__list {
+    @extend %list;
+    display: flex;
+    width: 450px;
+  
+    & :not(:first-child) {
+      margin-left: 30px;
+    }
+  }
+  
+  .clients__link {
+    @include flex(flex, center, center, none, none);
+    width: 170px;
+    height: 92px;
+    border-radius: 4px;
+    border: 1px solid $social-icon-color;
+    
+    color: $social-icon-color;
+  
+    transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover,&:focus {
+    border-color: $accent-color;
+    color: $accent-color;
+  }
+}
+  
+  .clients__icon {
+    fill: currentColor;
+  }

@@ -1,0 +1,34 @@
+
+.benefits__list {
+  @extend %list;
+    display: flex;
+  
+    & :not(:last-child) {
+      margin-right: 30px;
+    }
+  }
+  
+  .benefits__item {
+    width: 270px;
+  }
+  
+  .benefits__block {
+    @include flex(flex, center, center, column, none);
+    margin-bottom: 30px;
+    width: 270px;
+    height: 120px;
+    background-color: #f5f4fa;
+    border-radius: 4px;
+  }
+  
+  .benefits__tittle {
+    @include font (inherit, 14px, bold, 1.14, 0.03em, $secondary-title-color);
+    text-transform: uppercase;
+
+    margin-bottom: 10px;
+  }
+  
+  .benefits__text {
+    @include font (inherit, 14px, normal, 1.71, 0.03em, $primary-text-color);
+  }
+  

@@ -1,0 +1,54 @@
+
+.activiti {
+  @media screen and (max-width: 1199px) {
+    display: none;
+  }
+    padding-bottom: 94px;
+    background-color: $primary-title-color;
+  }
+  
+  .activiti__topic {
+    @include font (inherit, 36px, bold, 1.16, 0.03em, $secondary-title-color);
+
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  
+  .activiti__list {
+    @extend %list;
+    display: flex;
+  
+    & :not(:last-child) {
+      margin-right: 30px;
+    }
+  }
+  
+  .activiti__block {
+    position: relative;
+    width:370px;
+    height: 294px;
+
+  }
+  
+  .img{
+    @extend %img;
+  }
+  
+  .activiti__fond {
+    @include flex(flex, center, center, none, none);
+    width: 100%;
+    height: 70px;
+    bottom: 0;
+    position: absolute;
+    
+    background: rgba(47, 48, 58, 0.8);
+  }
+  
+  .activiti__caption {
+    @include font (inherit, 14px, bold, 1.16, 0.03em, $primary-title-color);
+
+    text-align: center;
+    text-transform: uppercase;
+  
+  }
+  
