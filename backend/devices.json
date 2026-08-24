@@ -1,0 +1,83 @@
+{
+  "devices": [
+    {
+      "id": 1,
+      "name": "Світло (Гостинна)",
+      "type": "light",
+      "status": "вкл",
+      "brightness": 75,
+      "history": [
+        {
+          "time": "10:00",
+          "status": "вкл",
+          "value": 75
+        },
+        {
+          "time": "10:15",
+          "status": "вкл",
+          "value": 80
+        },
+        {
+          "time": "10:30",
+          "status": "вкл",
+          "value": 75
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Опалення",
+      "type": "heating",
+      "status": "вкл",
+      "temperature": 22,
+      "targetTemp": 22,
+      "history": [
+        {
+          "time": "10:00",
+          "temp": 20
+        },
+        {
+          "time": "10:15",
+          "temp": 21
+        },
+        {
+          "time": "10:30",
+          "temp": 22
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Безпека (Двері)",
+      "type": "security",
+      "status": "активна",
+      "sensors": {
+        "door": "закрито",
+        "window": "закрито"
+      },
+      "history": []
+    },
+    {
+      "id": 4,
+      "name": "Кондиціонер",
+      "type": "ac",
+      "status": "вимк",
+      "temperature": 24,
+      "history": [
+        {
+          "time": "09:00",
+          "status": "вимк"
+        },
+        {
+          "time": "10:00",
+          "status": "вимк"
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "energyUsage": 42,
+    "waterUsage": 35,
+    "co2Level": 28
+  }
+}
