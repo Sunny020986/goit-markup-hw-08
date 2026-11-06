@@ -1,0 +1,57 @@
+/* Темна тема */
+body {
+  color: #b0b0b0;
+  background-color: #1a1a1a;
+}
+
+.header {
+  border-bottom-color: #333333;
+}
+
+.header__logo-link,
+.nav-menu__link,
+.modal__tittle,
+.benefits__tittle,
+.activiti__topic,
+.team__topic,
+.person__name,
+.clients__topic,
+.portfolio__btn,
+.portfolio__price {
+  color: #ffffff;
+}
+
+.nav-menu__link:hover,
+.nav-menu__link:focus {
+  color: #2196f3;
+}
+
+.nav-contact__link,
+.modal__label,
+.benefits__text,
+.person__team,
+.portfolio__term {
+  color: #b0b0b0;
+}
+
+.activiti {
+  background-color: #1a1a1a;
+}
+
+.team {
+  background-color: #232323;
+}
+
+.benefits__block,
+.team__item,
+.portfolio__btn,
+.modal,
+.modal__btn,
+.modal__checkbox {
+  background-color: #2d2d2d;
+}
+
+/* Іконки мають жорстко заданий темний колір, тому інвертуємо їх */
+.benefits__block svg {
+  filter: invert(1) hue-rotate(180deg);
+}
