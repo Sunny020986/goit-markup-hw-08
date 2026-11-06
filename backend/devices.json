@@ -22,7 +22,12 @@
           "status": "вкл",
           "value": 75
         }
-      ]
+      ],
+      "control": {
+        "onUrl": "",
+        "offUrl": "",
+        "brightnessUrl": ""
+      }
     },
     {
       "id": 2,
@@ -44,7 +49,12 @@
           "time": "10:30",
           "temp": 22
         }
-      ]
+      ],
+      "control": {
+        "onUrl": "",
+        "offUrl": "",
+        "tempUrl": ""
+      }
     },
     {
       "id": 3,
@@ -55,7 +65,11 @@
         "door": "закрито",
         "window": "закрито"
       },
-      "history": []
+      "history": [],
+      "control": {
+        "onUrl": "",
+        "offUrl": ""
+      }
     },
     {
       "id": 4,
@@ -72,7 +86,11 @@
           "time": "10:00",
           "status": "вимк"
         }
-      ]
+      ],
+      "control": {
+        "onUrl": "",
+        "offUrl": ""
+      }
     }
   ],
   "metrics": {

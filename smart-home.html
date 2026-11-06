@@ -267,6 +267,21 @@
       .memory-item .device-card__button {
         flex: 0 0 auto;
       }
+
+      .device-card__badge {
+        display: inline-block;
+        font-size: 12px;
+        color: #9e9e9e;
+        margin-bottom: 10px;
+      }
+
+      .device-card__badge--online {
+        color: #81c784;
+      }
+
+      .device-card__badge--offline {
+        color: #ff8a80;
+      }
     </style>
   </head>
 
@@ -457,6 +472,19 @@
         document.getElementById('loading').style.display = 'none';
       }
 
+      // ПОЗНАЧКА ПІДКЛЮЧЕННЯ ДО РЕАЛЬНОГО ПРИСТРОЮ
+      // Якщо в devices.json задано адреси (control.onUrl / offUrl), сервер керує справжнім пристроєм
+      function connectionBadge(device) {
+        const c = device.control || {};
+        if (!c.onUrl && !c.offUrl && !c.brightnessUrl && !c.tempUrl) {
+          return '<div class="device-card__badge">💻 Лише на сайті</div>';
+        }
+        if (device.online === false) {
+          return '<div class="device-card__badge device-card__badge--offline">⚠️ Пристрій не відповідає</div>';
+        }
+        return '<div class="device-card__badge device-card__badge--online">🔌 Підключено</div>';
+      }
+
       // Функція для створення карточки пристрою
       function createDeviceCard(device) {
         // Створюємо div для карточки
@@ -466,6 +494,7 @@
         // HTML для карточки залежить від типу пристрою
         let html = `
           <div class="device-card__name">${device.name}</div>
+          ${connectionBadge(device)}
           <div class="device-card__status">
             <span class="device-card__status-label">Статус:</span>
             <span class="device-card__status-value">${device.status}</span>
@@ -608,7 +637,9 @@
 
           // ПЕРЕВІРЕМО: ЧИ УСПІШНО?
           if (!response.ok) {
-            throw new Error('Помилка оновлення');
+            // Сервер повертає текст помилки, наприклад "Пристрій не відповідає: ..."
+            const result = await response.json().catch(() => ({}));
+            throw new Error(result.error || 'Помилка оновлення');
           }
 
           // ПЕРЕЗАВАНТАЖИМО ПРИСТРОЇ
@@ -622,7 +653,8 @@
           // Виводимо помилку в консоль для розробника
           console.error('Помилка при оновленні:', error);
           // alert() - показуємо вікно з помилкою для користувача
-          alert('Помилка при оновленні пристрою');
+          alert(`Помилка при оновленні пристрою:\n${error.message}`);
+          loadDevices(); // Оновлюємо картки, щоб показати "Пристрій не відповідає"
         }
       }
 

@@ -238,7 +238,7 @@ app.get('/api/devices/:id', (req, res) => {
 // ╚════════════════════════════════════════════════════════════╝
 
 // PUT - це HTTP метод для оновлення даних (на відміну від GET - отримання)
-app.put('/api/devices/:id', (req, res) => {
+app.put('/api/devices/:id', async (req, res) => {
   // Читаємо поточні дані з файлу
   const data = readDevices();
 
@@ -260,7 +260,24 @@ app.put('/api/devices/:id', (req, res) => {
   // Результат: всі властивості з req.body копіюються в device
   // Наприклад, якщо req.body = {brightness: 85},
   // то device.brightness стане 85
-  Object.assign(device, req.body);
+  // Поле control (адреси пристрою) змінюємо лише через окремий маршрут /control
+  const changes = { ...req.body };
+  delete changes.control;
+
+  // ╔════════════════════════════════════════════════════════════╗
+  // ║ НАДСИЛАЄМО GET-ЗАПИТ НА СПРАВЖНІЙ ПРИСТРІЙ                 ║
+  // ╚════════════════════════════════════════════════════════════╝
+  // Якщо в пристрою вказані адреси (device.control), сервер сам "натисне"
+  // кнопку на реальному пристрої. Якщо пристрій не відповів - стан не змінюємо.
+  const control = await sendDeviceCommand(device, changes);
+  if (control && !control.ok) {
+    device.online = false;
+    writeDevices(data);
+    return res.status(502).json({ error: `Пристрій не відповідає: ${control.error}`, control });
+  }
+  if (control) device.online = true;
+
+  Object.assign(device, changes);
 
   // ╔════════════════════════════════════════════════════════════╗
   // ║ ДОДАЄМО ЗАПИС ДО ІСТОРІЇ ЗМІН                             ║
@@ -313,6 +330,11 @@ app.put('/api/devices/:id', (req, res) => {
 
   // writeDevices(data) - записуємо всі дані назад у devices.json
   writeDevices(data);
+
+  // Додаємо до відповіді результат GET-запиту (щоб фронтенд бачив, що пристрій відповів)
+  if (control) {
+    return res.json({ ...device, control });
+  }
 
   // res.json(device) - надсилаємо оновлений пристрій до фронтенду
   // Фронтенд побачить нові дані та оновить сторінку
@@ -398,6 +420,127 @@ app.get('/api/devices/:id/history', (req, res) => {
 app.get('/api/health', (req, res) => {
   // Надсилаємо просту відповідь, що сервер живий
   res.json({ status: 'Сервер працює!' });
+});
+
+
+// ===================================
+// КЕРУВАННЯ РЕАЛЬНИМИ ПРИСТРОЯМИ (GET-ЗАПИТИ)
+// ===================================
+// У devices.json кожен пристрій може мати поле "control" з адресами:
+//
+//   "control": {
+//     "onUrl":  "http://192.168.1.50/relay/0?turn=on",    ← GET при "Включити"
+//     "offUrl": "http://192.168.1.50/relay/0?turn=off",   ← GET при "Вимкнути"
+//     "brightnessUrl": "http://192.168.1.50/light/0?brightness={value}", ← яскравість
+//     "tempUrl": "http://192.168.1.60/set?temp={value}"   ← бажана температура
+//   }
+//
+// {value} автоматично замінюється на число (яскравість або температуру).
+// Порожня адреса "" означає: для цієї дії запит не надсилати.
+
+const DEVICE_TIMEOUT_MS = 5000; // Скільки чекати відповіді від пристрою (5 секунд)
+
+// Статуси, які означають "увімкнути" / "вимкнути"
+const ON_STATUSES = ['вкл', 'активна', 'on'];
+const OFF_STATUSES = ['вимк', 'неактивна', 'off'];
+
+// Вибираємо, яку адресу викликати, залежно від того, що змінюється
+function pickControlUrl(control, changes) {
+  if (changes.status !== undefined) {
+    if (ON_STATUSES.includes(changes.status)) return control.onUrl;
+    if (OFF_STATUSES.includes(changes.status)) return control.offUrl;
+  }
+  if (changes.brightness !== undefined && control.brightnessUrl) {
+    return control.brightnessUrl.replace('{value}', encodeURIComponent(changes.brightness));
+  }
+  if (changes.targetTemp !== undefined && control.tempUrl) {
+    return control.tempUrl.replace('{value}', encodeURIComponent(changes.targetTemp));
+  }
+  return null;
+}
+
+// Надсилаємо GET-запит на пристрій.
+// Повертає null, якщо для цієї дії адреси немає (тоді просто змінюємо стан у файлі).
+async function sendDeviceCommand(device, changes) {
+  if (!device.control) return null;
+  const url = pickControlUrl(device.control, changes);
+  if (!url) return null;
+
+  const started = Date.now();
+  try {
+    // fetch() вбудований у Node.js 18+; AbortSignal.timeout - обмеження часу очікування
+    const response = await fetch(url, { method: 'GET', signal: AbortSignal.timeout(DEVICE_TIMEOUT_MS) });
+    const body = (await response.text()).slice(0, 500); // Відповідь пристрою (обрізаємо, щоб не була величезною)
+    const result = { ok: response.ok, url, httpStatus: response.status, ms: Date.now() - started, response: body };
+    if (!response.ok) result.error = `HTTP ${response.status}`;
+    console.log(`🔌 GET ${url} → ${response.status} (${result.ms} мс)`);
+    return result;
+  } catch (err) {
+    // Перекладаємо технічні помилки на зрозумілу мову
+    const code = err.cause && err.cause.code;
+    const messages = {
+      ECONNREFUSED: 'пристрій відхилив з\'єднання (неправильний порт або пристрій вимкнений)',
+      EHOSTUNREACH: 'пристрій недоступний у мережі (перевірте IP-адресу)',
+      ENOTFOUND: 'адресу не знайдено (перевірте IP-адресу або назву)',
+      ETIMEDOUT: 'час очікування з\'єднання вичерпано'
+    };
+    const error =
+      err.name === 'TimeoutError'
+        ? `немає відповіді за ${DEVICE_TIMEOUT_MS / 1000} с`
+        : messages[code] || (code ? `${err.message} (${code})` : err.message);
+    console.log(`⚠️  GET ${url} → помилка: ${error}`);
+    return { ok: false, url, ms: Date.now() - started, error };
+  }
+}
+
+// Перевіряємо, що адреса - це http(s) посилання (або порожня)
+function isValidUrl(value) {
+  if (value === '' || value === undefined) return true;
+  try {
+    const u = new URL(String(value).replace('{value}', '0'));
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+// GET /api/devices/:id/control → подивитися адреси пристрою
+app.get('/api/devices/:id/control', (req, res) => {
+  const device = readDevices().devices.find(d => d.id === parseInt(req.params.id));
+  if (!device) return res.status(404).json({ error: 'Пристрій не знайдено' });
+  res.json(device.control || {});
+});
+
+// PUT /api/devices/:id/control → задати адреси пристрою
+// Тіло: { "onUrl": "http://...", "offUrl": "http://..." }
+app.put('/api/devices/:id/control', (req, res) => {
+  const data = readDevices();
+  const device = data.devices.find(d => d.id === parseInt(req.params.id));
+  if (!device) return res.status(404).json({ error: 'Пристрій не знайдено' });
+
+  const allowed = ['onUrl', 'offUrl', 'brightnessUrl', 'tempUrl'];
+  const control = { ...(device.control || {}) };
+  for (const key of allowed) {
+    if (req.body[key] === undefined) continue;
+    if (!isValidUrl(req.body[key])) {
+      return res.status(400).json({ error: `Неправильна адреса в полі ${key} (потрібно http:// або https://)` });
+    }
+    control[key] = String(req.body[key]).trim();
+  }
+  device.control = control;
+  writeDevices(data);
+  res.json(control);
+});
+
+// GET /api/devices/:id/test?action=on → перевірити зв'язок з пристроєм,
+// не змінюючи стан у devices.json (action: on, off)
+app.get('/api/devices/:id/test', async (req, res) => {
+  const device = readDevices().devices.find(d => d.id === parseInt(req.params.id));
+  if (!device) return res.status(404).json({ error: 'Пристрій не знайдено' });
+  const status = req.query.action === 'off' ? 'вимк' : 'вкл';
+  const result = await sendDeviceCommand(device, { status });
+  if (!result) return res.status(400).json({ error: 'Для пристрою не задано адресу (control.onUrl / control.offUrl)' });
+  res.status(result.ok ? 200 : 502).json(result);
 });
 
 // ===================================
