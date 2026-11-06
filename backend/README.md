@@ -55,6 +55,33 @@ GET http://localhost:3000/api/devices/1/history
 ```
 **Повертає:** Історію змін пристрою
 
+### 6. Стан сервера (RAM, CPU, час роботи)
+```
+GET http://localhost:3000/api/status
+```
+**Повертає:** використання оперативної пам'яті, пам'ять процесу Node.js, навантаження CPU, uptime
+
+### 7. Журнал стану сервера
+```
+GET  http://localhost:3000/api/status/history   # історія (останні 24 год)
+POST http://localhost:3000/api/status/save      # зберегти стан зараз
+```
+Сервер сам записує стан у `status-log.json` при запуску і далі кожні 5 хвилин.
+
+### 8. Пам'ять: збережені стани пристроїв (знімки)
+```
+GET    http://localhost:3000/api/memory              # список знімків
+POST   http://localhost:3000/api/memory              # зберегти поточний стан
+GET    http://localhost:3000/api/memory/:id          # один знімок
+POST   http://localhost:3000/api/memory/:id/restore  # відновити стан пристроїв
+DELETE http://localhost:3000/api/memory/:id          # видалити знімок
+```
+**Тіло для збереження (необов'язково):**
+```json
+{ "name": "Вечір" }
+```
+Знімки зберігаються у `memory.json` (до 50 штук).
+
 ---
 
 ## 📋 Типи Пристроїв
@@ -72,6 +99,8 @@ GET http://localhost:3000/api/devices/1/history
 backend/
 ├── server.js         # Основний файл сервера
 ├── devices.json      # База даних з пристроями
+├── memory.json       # Збережені стани (створюється автоматично)
+├── status-log.json   # Журнал стану сервера (створюється автоматично)
 ├── package.json      # Конфігурація Node.js
 └── README.md         # Цей файл
 ```

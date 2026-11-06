@@ -8,6 +8,7 @@ const cors = require('cors'); // Дозволяє запити з іншого �
 const bodyParser = require('body-parser'); // Парсер для обробки JSON даних з запитів
 const fs = require('fs'); // Модуль для роботи з файлами (читати, писати)
 const path = require('path'); // Модуль для роботи з шляхами файлів
+const os = require('os'); // Модуль для інформації про систему (пам'ять, CPU, uptime)
 
 // СТВОРЮЄМО СЕРВЕР
 const app = express(); // Створюємо новий Express додаток (це наш сервер)
@@ -65,7 +66,25 @@ function writeDevices(devices) {
   //   null - не фільтруємо властивості (записуємо все)
   //   2 - інтервал в 2 пробіли (робить JSON красивим для читання)
   // 'utf8' - кодування (як кодуватимуться символи у файлі)
-  fs.writeFileSync(dataFile, JSON.stringify(devices, null, 2), 'utf8');
+  writeJsonAtomic(dataFile, devices);
+}
+
+// БЕЗПЕЧНИЙ (АТОМАРНИЙ) ЗАПИС JSON У ФАЙЛ
+// Спочатку пишемо в тимчасовий файл, потім перейменовуємо його.
+// Якщо сервер "впаде" посеред запису, старий файл залишиться цілим.
+function writeJsonAtomic(file, obj) {
+  const tmp = file + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(obj, null, 2), 'utf8');
+  fs.renameSync(tmp, file);
+}
+
+// ЧИТАННЯ JSON З ФАЙЛУ (якщо файлу немає або він пошкоджений, повертаємо fallback)
+function readJson(file, fallback) {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (err) {
+    return fallback;
+  }
 }
 
 // ФУНКЦІЯ ДЛЯ ІНІЦІАЛІЗАЦІЇ БД (СТВОРЮЄ ВИХІДНІ ДАНІ)
@@ -381,6 +400,170 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Сервер працює!' });
 });
 
+// ===================================
+// СТАН СЕРВЕРА ТА ПАМ'ЯТЬ (RAM)
+// ===================================
+
+// Файл, де зберігається журнал стану сервера (історія використання пам'яті)
+const statusFile = path.join(__dirname, 'status-log.json');
+const STATUS_LOG_LIMIT = 288; // 288 записів × 5 хв = останні 24 години
+const STATUS_INTERVAL_MS = 5 * 60 * 1000; // Записуємо стан кожні 5 хвилин
+
+// Байти → мегабайти (з округленням до 1 знака)
+function toMB(bytes) {
+  return Math.round((bytes / 1024 / 1024) * 10) / 10;
+}
+
+// ЗБИРАЄМО ПОТОЧНИЙ СТАН СЕРВЕРА
+function getServerStatus() {
+  const total = os.totalmem(); // Вся оперативна пам'ять системи
+  const free = os.freemem(); // Вільна пам'ять
+  const used = total - free; // Зайнята пам'ять
+  const proc = process.memoryUsage(); // Пам'ять, яку займає сам Node.js процес
+
+  return {
+    time: new Date().toISOString(), // Час у форматі ISO (2026-11-06T10:00:00.000Z)
+    hostname: os.hostname(), // Ім'я машини (наприклад, назва VM на Proxmox)
+    platform: `${os.type()} ${os.release()}`,
+    uptimeServer: Math.round(os.uptime()), // Скільки секунд працює система
+    uptimeProcess: Math.round(process.uptime()), // Скільки секунд працює цей сервер
+    cpu: {
+      cores: os.cpus().length,
+      load1: Math.round(os.loadavg()[0] * 100) / 100 // Середнє навантаження за 1 хв
+    },
+    memory: {
+      totalMB: toMB(total),
+      usedMB: toMB(used),
+      freeMB: toMB(free),
+      usedPercent: Math.round((used / total) * 100)
+    },
+    processMemory: {
+      rssMB: toMB(proc.rss), // Загальна пам'ять процесу
+      heapUsedMB: toMB(proc.heapUsed) // Пам'ять, зайнята JavaScript об'єктами
+    }
+  };
+}
+
+// ЗБЕРІГАЄМО ОДИН ЗАПИС СТАНУ В ЖУРНАЛ (status-log.json)
+function saveStatusSnapshot() {
+  const s = getServerStatus();
+  const log = readJson(statusFile, []);
+  // У журнал пишемо лише короткі дані, щоб файл був невеликим
+  log.push({
+    time: s.time,
+    memUsedPercent: s.memory.usedPercent,
+    memUsedMB: s.memory.usedMB,
+    processRssMB: s.processMemory.rssMB,
+    load1: s.cpu.load1
+  });
+  writeJsonAtomic(statusFile, log.slice(-STATUS_LOG_LIMIT));
+  return s;
+}
+
+// GET /api/status → поточний стан сервера (без запису)
+app.get('/api/status', (req, res) => {
+  res.json(getServerStatus());
+});
+
+// GET /api/status/history → журнал збереженого стану (для графіків)
+app.get('/api/status/history', (req, res) => {
+  res.json(readJson(statusFile, []));
+});
+
+// POST /api/status/save → зберегти стан прямо зараз (вручну)
+app.post('/api/status/save', (req, res) => {
+  res.status(201).json(saveStatusSnapshot());
+});
+
+// ===================================
+// ПАМ'ЯТЬ ПРИСТРОЇВ (ЗНІМКИ / СЦЕНИ)
+// ===================================
+// "Знімок" - це збережений стан усіх пристроїв (статус, яскравість, температура).
+// Можна зберегти, наприклад, "Вечір" або "Пішов з дому" і потім відновити одним кліком.
+
+const memoryFile = path.join(__dirname, 'memory.json');
+const MEMORY_LIMIT = 50; // Максимум збережених знімків
+
+// Поля, які зберігаємо у знімку (історію не зберігаємо, щоб не дублювати)
+const SAVED_FIELDS = ['status', 'brightness', 'temperature', 'targetTemp', 'sensors'];
+
+// Витягуємо зі пристрою лише потрібні поля
+function pickState(device) {
+  const state = { id: device.id };
+  SAVED_FIELDS.forEach(field => {
+    if (device[field] !== undefined) state[field] = device[field];
+  });
+  return state;
+}
+
+// GET /api/memory → список усіх знімків
+app.get('/api/memory', (req, res) => {
+  res.json(readJson(memoryFile, []));
+});
+
+// POST /api/memory → зберегти поточний стан пристроїв
+// Тіло запиту (необов'язково): { "name": "Вечір" }
+app.post('/api/memory', (req, res) => {
+  const name = String((req.body && req.body.name) || '').trim().slice(0, 50);
+  const data = readDevices();
+  const memory = readJson(memoryFile, []);
+
+  const snapshot = {
+    id: Date.now(), // Унікальний ID - поточний час у мілісекундах
+    name: name || `Знімок ${new Date().toLocaleString('uk-UA')}`,
+    createdAt: new Date().toISOString(),
+    devices: data.devices.map(pickState),
+    metrics: { ...data.metrics }
+  };
+
+  memory.push(snapshot);
+  writeJsonAtomic(memoryFile, memory.slice(-MEMORY_LIMIT));
+  res.status(201).json(snapshot);
+});
+
+// GET /api/memory/:id → один знімок
+app.get('/api/memory/:id', (req, res) => {
+  const snapshot = readJson(memoryFile, []).find(m => m.id === Number(req.params.id));
+  if (!snapshot) return res.status(404).json({ error: 'Знімок не знайдено' });
+  res.json(snapshot);
+});
+
+// POST /api/memory/:id/restore → відновити стан пристроїв зі знімка
+app.post('/api/memory/:id/restore', (req, res) => {
+  const snapshot = readJson(memoryFile, []).find(m => m.id === Number(req.params.id));
+  if (!snapshot) return res.status(404).json({ error: 'Знімок не знайдено' });
+
+  const data = readDevices();
+  const time = new Date().toLocaleTimeString('uk-UA');
+
+  snapshot.devices.forEach(saved => {
+    const device = data.devices.find(d => d.id === saved.id);
+    if (!device) return; // Пристрій могли видалити - пропускаємо
+    SAVED_FIELDS.forEach(field => {
+      if (saved[field] !== undefined) device[field] = saved[field];
+    });
+    // Записуємо у історію, що стан відновлено з пам'яті
+    device.history = device.history || [];
+    device.history.push({ time, status: device.status, restoredFrom: snapshot.name });
+    device.history = device.history.slice(-20);
+  });
+
+  if (snapshot.metrics) Object.assign(data.metrics, snapshot.metrics);
+  writeDevices(data);
+  res.json(data.devices);
+});
+
+// DELETE /api/memory/:id → видалити знімок
+app.delete('/api/memory/:id', (req, res) => {
+  const memory = readJson(memoryFile, []);
+  const rest = memory.filter(m => m.id !== Number(req.params.id));
+  if (rest.length === memory.length) {
+    return res.status(404).json({ error: 'Знімок не знайдено' });
+  }
+  writeJsonAtomic(memoryFile, rest);
+  res.json({ deleted: true });
+});
+
 // ╔════════════════════════════════════════════════════════════╗
 // ║ ЗАПУСК СЕРВЕРА                                              ║
 // ║ Це останній крок - сервер починає слухати запити           ║
@@ -395,6 +578,10 @@ app.listen(PORT, () => {
   // Коли ви запустите сервер, побачите це повідомлення
   console.log(`🏠 Сервер розумного будинку запущено на http://localhost:${PORT}`);
   console.log(`📍 API доступна за адресою http://localhost:${PORT}/api`);
+
+  // Одразу зберігаємо стан сервера і далі - кожні 5 хвилин
+  saveStatusSnapshot();
+  setInterval(saveStatusSnapshot, STATUS_INTERVAL_MS);
 
   // Тепер ви можете:
   // 1. Відкрити http://localhost:3000/api/devices в браузері

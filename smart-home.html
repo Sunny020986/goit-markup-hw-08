@@ -215,6 +215,58 @@
         border-radius: 4px;
         margin-bottom: 20px;
       }
+
+      /* Пам'ять (знімки) */
+      .memory-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+      }
+
+      .memory-form__input {
+        flex: 1;
+        min-width: 180px;
+        padding: 8px 12px;
+        border: 1px solid #4a4a4a;
+        border-radius: 4px;
+        background: #3a3a3a;
+        color: #ffffff;
+      }
+
+      .memory-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      .memory-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        background: #3a3a3a;
+        padding: 10px 15px;
+        border-radius: 8px;
+      }
+
+      .memory-item__name {
+        flex: 1;
+        min-width: 150px;
+        color: #ffffff;
+      }
+
+      .memory-item__date {
+        display: block;
+        font-size: 12px;
+        color: #9e9e9e;
+      }
+
+      .memory-item .device-card__button {
+        flex: 0 0 auto;
+      }
     </style>
   </head>
 
@@ -263,6 +315,29 @@
           <div id="metrics-container" class="metrics" style="display: none;">
             <h2 class="metrics__title">📊 Метрики</h2>
             <div class="metrics-grid" id="metrics-grid"></div>
+          </div>
+          <!-- Стан сервера та оперативна пам'ять -->
+          <div id="status-container" class="metrics" style="display: none;">
+            <h2 class="metrics__title">🖥️ Стан сервера</h2>
+            <div class="metrics-grid" id="status-grid"></div>
+          </div>
+
+          <!-- Пам'ять: збережені знімки стану пристроїв -->
+          <div class="metrics">
+            <h2 class="metrics__title">💾 Пам'ять (збережені стани)</h2>
+            <form class="memory-form" id="memory-form">
+              <input
+                class="memory-form__input"
+                id="memory-name"
+                type="text"
+                maxlength="50"
+                placeholder="Назва, наприклад «Вечір»"
+              />
+              <button class="device-card__button device-card__button--on" type="submit">
+                💾 Зберегти поточний стан
+              </button>
+            </form>
+            <ul class="memory-list" id="memory-list"></ul>
           </div>
         </div>
       </section>
@@ -616,6 +691,140 @@
       }
 
       // ╔════════════════════════════════════════════════════════════╗
+      // ║ ФУНКЦІЯ 4: СТАН СЕРВЕРА (RAM, CPU, час роботи)             ║
+      // ╚════════════════════════════════════════════════════════════╝
+
+      // Секунди → "2 д 3 год 15 хв"
+      function formatUptime(sec) {
+        const d = Math.floor(sec / 86400);
+        const h = Math.floor((sec % 86400) / 3600);
+        const m = Math.floor((sec % 3600) / 60);
+        return `${d ? d + ' д ' : ''}${h} год ${m} хв`;
+      }
+
+      async function loadStatus() {
+        try {
+          const response = await fetch(`${API_URL}/status`);
+          if (!response.ok) throw new Error('Помилка завантаження стану');
+          const s = await response.json();
+
+          document.getElementById('status-grid').innerHTML = `
+            <div class="metric-card">
+              <div class="metric-card__label">🧠 Оперативна пам'ять</div>
+              <div class="metric-card__value">${s.memory.usedPercent}%</div>
+              <div class="metric-card__percentage">${s.memory.usedMB} / ${s.memory.totalMB} МБ</div>
+              <div class="progress-bar">
+                <div class="progress-bar__fill" style="width: ${s.memory.usedPercent}%"></div>
+              </div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card__label">📦 Пам'ять сервера (Node.js)</div>
+              <div class="metric-card__value">${s.processMemory.rssMB}</div>
+              <div class="metric-card__percentage">МБ</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card__label">⚙️ Навантаження CPU (1 хв)</div>
+              <div class="metric-card__value">${s.cpu.load1}</div>
+              <div class="metric-card__percentage">ядер: ${s.cpu.cores}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-card__label">⏱️ Час роботи сервера</div>
+              <div class="metric-card__value" style="font-size: 20px;">${formatUptime(s.uptimeProcess)}</div>
+              <div class="metric-card__percentage">${s.hostname}</div>
+            </div>
+          `;
+          document.getElementById('status-container').style.display = 'block';
+        } catch (error) {
+          console.error('Помилка при завантаженні стану сервера:', error);
+        }
+      }
+
+      // ╔════════════════════════════════════════════════════════════╗
+      // ║ ФУНКЦІЯ 5: ПАМ'ЯТЬ - ЗБЕРЕГТИ / ВІДНОВИТИ / ВИДАЛИТИ        ║
+      // ╚════════════════════════════════════════════════════════════╝
+
+      // Захист від HTML у назві (щоб назва не "зламала" сторінку)
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      async function loadMemory() {
+        try {
+          const response = await fetch(`${API_URL}/memory`);
+          if (!response.ok) throw new Error('Помилка завантаження пам\'яті');
+          const memory = await response.json();
+          const list = document.getElementById('memory-list');
+
+          if (memory.length === 0) {
+            list.innerHTML = '<li class="metric-card__percentage">Ще немає збережених станів</li>';
+            return;
+          }
+
+          // Найновіші знімки - зверху
+          list.innerHTML = memory
+            .slice()
+            .reverse()
+            .map(
+              m => `
+              <li class="memory-item">
+                <span class="memory-item__name">
+                  ${escapeHtml(m.name)}
+                  <span class="memory-item__date">${new Date(m.createdAt).toLocaleString('uk-UA')}</span>
+                </span>
+                <button class="device-card__button device-card__button--on" onclick="restoreMemory(${m.id})">↺ Відновити</button>
+                <button class="device-card__button device-card__button--off" onclick="deleteMemory(${m.id})">🗑 Видалити</button>
+              </li>`
+            )
+            .join('');
+        } catch (error) {
+          console.error('Помилка при завантаженні пам\'яті:', error);
+        }
+      }
+
+      async function saveMemory(event) {
+        event.preventDefault(); // Не перезавантажувати сторінку при відправці форми
+        const input = document.getElementById('memory-name');
+        try {
+          const response = await fetch(`${API_URL}/memory`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: input.value })
+          });
+          if (!response.ok) throw new Error('Помилка збереження');
+          input.value = '';
+          loadMemory();
+        } catch (error) {
+          console.error(error);
+          alert('Не вдалося зберегти стан');
+        }
+      }
+
+      async function restoreMemory(id) {
+        try {
+          const response = await fetch(`${API_URL}/memory/${id}/restore`, { method: 'POST' });
+          if (!response.ok) throw new Error('Помилка відновлення');
+          loadDevices(); // Показуємо відновлений стан пристроїв
+        } catch (error) {
+          console.error(error);
+          alert('Не вдалося відновити стан');
+        }
+      }
+
+      async function deleteMemory(id) {
+        if (!confirm('Видалити цей збережений стан?')) return;
+        try {
+          const response = await fetch(`${API_URL}/memory/${id}`, { method: 'DELETE' });
+          if (!response.ok) throw new Error('Помилка видалення');
+          loadMemory();
+        } catch (error) {
+          console.error(error);
+          alert('Не вдалося видалити');
+        }
+      }
+
+      // ╔════════════════════════════════════════════════════════════╗
       // ║ ЗАПУСК ПРОГРАМИ                                            ║
       // ║ Цей код виконується, коли сторінка завантажується         ║
       // ╚════════════════════════════════════════════════════════════╝
@@ -637,6 +846,14 @@
       // Результат: кожні 5 секунд сторінка оновлюється новими даними з сервера
       // Користувач видить, як змінюються статуси пристроїв у реальному часі
       setInterval(loadDevices, 5000);
+
+      // Стан сервера та пам'ять
+      document.addEventListener('DOMContentLoaded', () => {
+        loadStatus();
+        loadMemory();
+        document.getElementById('memory-form').addEventListener('submit', saveMemory);
+      });
+      setInterval(loadStatus, 5000); // Оновлюємо RAM/CPU кожні 5 секунд
     </script>
   </body>
 </html>

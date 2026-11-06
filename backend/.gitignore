@@ -1,1 +1,4 @@
 node_modules/
+status-log.json
+memory.json
+*.tmp
