@@ -1,0 +1,408 @@
+// ===================================================================
+// АДАПТИВНІСТЬ: телефони (< 768px) і планшети (768px – 1199px)
+// Десктопні стилі (≥ 1200px) лишаються як є — тут лише перевизначення.
+// ===================================================================
+
+$mobile-max: 767px;
+$tablet-max: 1199px;
+
+@mixin mobile {
+  @media screen and (max-width: $mobile-max) {
+    @content;
+  }
+}
+
+@mixin tablet-down {
+  @media screen and (max-width: $tablet-max) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
+  @media screen and (min-width: #{$mobile-max + 1}) and (max-width: $tablet-max) {
+    @content;
+  }
+}
+
+// Страховка: жоден елемент не розтягує сторінку вбік
+html,
+body {
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+// ---------------------------------------------------------------
+// Загальні відступи секцій
+// ---------------------------------------------------------------
+.section {
+  @include tablet-only {
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+  @include mobile {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+}
+
+.team__topic,
+.clients__topic,
+.activiti__topic {
+  @include tablet-down {
+    font-size: 32px;
+    margin-bottom: 40px;
+  }
+  @include mobile {
+    font-size: 26px;
+    margin-bottom: 30px;
+  }
+}
+
+// ---------------------------------------------------------------
+// Шапка
+// ---------------------------------------------------------------
+.header__container {
+  @include tablet-down {
+    align-items: center;
+  }
+  @include mobile {
+    flex-wrap: wrap;
+  }
+}
+
+.header__logo-link {
+  @include mobile {
+    font-size: 22px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+  }
+}
+
+.nav {
+  @include mobile {
+    order: 3;
+    width: 100%;
+  }
+}
+
+.nav-menu__list {
+  @include tablet-only {
+    margin-left: 40px;
+    :not(:last-child) {
+      margin-right: 30px;
+    }
+  }
+  @include mobile {
+    margin-left: 0;
+    flex-grow: 1;
+    justify-content: space-between;
+    :not(:last-child) {
+      margin-right: 12px;
+    }
+  }
+}
+
+.nav-menu__link,
+.nav-menu__link--current {
+  white-space: nowrap;
+  @include tablet-only {
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+  @include mobile {
+    font-size: 14px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+}
+
+.nav-contact {
+  @include tablet-down {
+    margin-left: auto;
+  }
+  @include mobile {
+    align-items: flex-end;
+    padding-top: 12px;
+  }
+}
+
+.nav-contact__link {
+  @include mobile {
+    font-size: 12px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+}
+
+// ---------------------------------------------------------------
+// Hero
+// ---------------------------------------------------------------
+.hero {
+  padding-left: 15px;
+  padding-right: 15px;
+  @include tablet-only {
+    padding-top: 140px;
+    padding-bottom: 140px;
+  }
+  @include mobile {
+    padding-top: 90px;
+    padding-bottom: 90px;
+    background-image: linear-gradient(rgba(47, 48, 58, 0.5), rgba(47, 48, 58, 0.5)),
+      url(../images/Hero768.jpg);
+  }
+}
+
+.hero__title {
+  @include tablet-only {
+    font-size: 38px;
+  }
+  @include mobile {
+    font-size: 26px;
+    letter-spacing: 0.04em;
+    margin-bottom: 24px;
+  }
+}
+
+// ---------------------------------------------------------------
+// Переваги (benefits)
+// ---------------------------------------------------------------
+.benefits__list {
+  @include tablet-down {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 30px;
+
+    :not(:last-child) {
+      margin-right: 0;
+    }
+  }
+  @media screen and (max-width: 479px) {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+.benefits__item,
+.benefits__block {
+  @include tablet-down {
+    width: 100%;
+  }
+}
+
+.benefits__block {
+  @include mobile {
+    margin-bottom: 20px;
+  }
+}
+
+// ---------------------------------------------------------------
+// Команда
+// ---------------------------------------------------------------
+.team__list {
+  @include tablet-down {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 270px));
+    justify-content: center;
+    gap: 30px;
+  }
+  @media screen and (max-width: 479px) {
+    grid-template-columns: minmax(0, 300px);
+  }
+}
+
+.team__item {
+  @include tablet-down {
+    width: 100%;
+    & + & {
+      margin-left: 0;
+    }
+    .img {
+      width: 100%;
+      aspect-ratio: 270 / 260;
+      object-fit: cover;
+    }
+  }
+}
+
+// ---------------------------------------------------------------
+// Керування пристроями (clients)
+// ---------------------------------------------------------------
+.clients__list {
+  @include tablet-down {
+    width: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+
+    :not(:first-child) {
+      margin-left: 0;
+    }
+  }
+  @include mobile {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}
+
+.clients__link {
+  @include tablet-down {
+    width: 100%;
+  }
+}
+
+// ---------------------------------------------------------------
+// Портфоліо
+// ---------------------------------------------------------------
+.portfolio-btn__list {
+  @include tablet-down {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 40px;
+
+    :not(:first-child) {
+      margin-left: 0;
+    }
+  }
+  @include mobile {
+    margin-bottom: 30px;
+  }
+}
+
+.portfolio__btn,
+.portfolio__btn--current {
+  @include mobile {
+    font-size: 14px;
+    padding: 6px 16px;
+  }
+}
+
+.portfolio__list {
+  @include tablet-down {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.portfolio__item {
+  @include tablet-down {
+    &:not(:nth-child(3n)) {
+      margin-right: 0;
+    }
+    &:not(:nth-last-child(-n + 3)) {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.portfolio__link {
+  @include tablet-down {
+    width: 100%;
+    .img {
+      width: 100%;
+    }
+  }
+}
+
+.portfolio__block--data {
+  @include mobile {
+    padding: 16px 20px;
+  }
+}
+
+// ---------------------------------------------------------------
+// Футер
+// ---------------------------------------------------------------
+.footer {
+  @include mobile {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+
+.footer__container {
+  @include tablet-down {
+    flex-wrap: wrap;
+  }
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.footer__block {
+  @include mobile {
+    & + & {
+      margin-left: 0;
+      margin-top: 30px;
+    }
+  }
+}
+
+.footer__subscribe {
+  @include tablet-down {
+    margin-left: 0;
+    margin-top: 40px;
+    width: 100%;
+  }
+  @include mobile {
+    margin-top: 30px;
+  }
+}
+
+.footer__input {
+  @include tablet-down {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+}
+
+.footer__form {
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+.footer__submit {
+  @include mobile {
+    margin-left: 0;
+    margin-top: 12px;
+    justify-content: center;
+  }
+}
+
+// ---------------------------------------------------------------
+// Модальне вікно
+// ---------------------------------------------------------------
+.modal {
+  @include mobile {
+    width: calc(100% - 30px);
+    max-height: calc(100% - 30px);
+    min-height: 0;
+    padding: 40px 20px 24px;
+    overflow-y: auto;
+  }
+}
+
+.modal__icon--data {
+  @include mobile {
+    right: auto;
+    left: 25px;
+  }
+}
+
+.modal__label--checkbox {
+  @include mobile {
+    flex-wrap: wrap;
+    text-align: center;
+  }
+}
