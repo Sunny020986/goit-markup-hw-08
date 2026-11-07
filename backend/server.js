@@ -11,7 +11,7 @@ const path = require('path'); // Модуль для роботи з шляха�
 
 // СТВОРЮЄМО СЕРВЕР
 const app = express(); // Створюємо новий Express додаток (це наш сервер)
-const PORT = 3000; // Змінна з номером порту (3000 - це можна змінити)
+const PORT = process.env.PORT || 3000; // Порт: з змінної оточення PORT або 3000 за замовчуванням
 
 // НАЛАШТУВАННЯ MIDDLEWARE (ОБРОБНИКИ ЗАПИТІВ)
 // Middleware - це функції, що обробляють всі приходящі запити
@@ -27,7 +27,8 @@ app.use(express.static(path.join(__dirname, '..'))); // Подаємо стат�
 // ПУТЬ ДО ФАЙЛУ З ДАНИМИ
 // __dirname - це спеціальна змінна, що означає папку, де знаходиться цей файл
 // path.join - об'єднує шляхи правильно для операційної системи
-const dataFile = path.join(__dirname, 'devices.json');
+// DATA_FILE - змінна оточення (у Docker вказує на /data/devices.json, щоб дані не губилися)
+const dataFile = process.env.DATA_FILE || path.join(__dirname, 'devices.json');
 
 // ФУНКЦІЯ ДЛЯ ЧИТАННЯ ПРИСТРОЇВ З ФАЙЛУ
 // function - це ключове слово для створення функції
