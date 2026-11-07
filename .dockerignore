@@ -1,0 +1,8 @@
+.git
+.vscode
+**/node_modules
+goit-markup-hw-08-master
+sass
+*.md
+Dockerfile
+docker-compose.yml

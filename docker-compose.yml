@@ -1,0 +1,12 @@
+services:
+  web:
+    build: .
+    container_name: smart-home
+    restart: unless-stopped
+    ports:
+      - "80:3000"   # сайт буде доступний на http://IP-контейнера
+    volumes:
+      - smart-home-data:/data   # devices.json зберігається між перезапусками
+
+volumes:
+  smart-home-data:
